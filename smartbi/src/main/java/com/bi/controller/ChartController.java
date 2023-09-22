@@ -9,17 +9,17 @@ import com.bi.common.ResultUtils;
 import com.bi.constant.UserConstant;
 import com.bi.exception.BusinessException;
 import com.bi.exception.ThrowUtils;
-import com.bi.model.dto.chart.ChartAddRequest;
-import com.bi.model.dto.chart.ChartEditRequest;
-import com.bi.model.dto.chart.ChartQueryRequest;
-import com.bi.model.dto.chart.ChartUpdateRequest;
+import com.bi.model.dto.chart.*;
 import com.bi.model.entity.Chart;
 import com.bi.model.entity.User;
 import com.bi.service.ChartService;
 import com.bi.service.UserService;
+import com.bi.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,6 @@ public class ChartController {
 
     @Resource
     private ChartService chartService;
-
 
     @Resource
     private UserService userService;
@@ -200,5 +199,36 @@ public class ChartController {
         boolean result = chartService.updateById(post);
         return ResultUtils.success(result);
     }
+
+    /**
+     * 文件上传
+     *
+     * @param multipartFile       文件
+     * @param genChartByAiRequest 请求
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/gen")
+    public BaseResponse<String> genChartByAi(@RequestPart("file") MultipartFile multipartFile, GenChartByAiRequest genChartByAiRequest) {
+
+        String chartName = genChartByAiRequest.getChartName();
+        String goal = genChartByAiRequest.getGoal();
+        String chartType = genChartByAiRequest.getChartType();
+        ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "目标信息为空");
+        ThrowUtils.throwIf(StringUtils.isBlank(chartType), ErrorCode.PARAMS_ERROR, "图标信息为空");
+        ThrowUtils.throwIf(StringUtils.isNotBlank(chartName) && chartName.length() > 100, ErrorCode.PARAMS_ERROR, "名称过长");
+
+        // 用户输入信息构建
+        StringBuilder userInput = new StringBuilder();
+        // ai 模型身份预设
+        userInput.append("你是一个数据分析师。接下来我会给你我的分析目标和原始数据,请告诉我分析结论。").append("\n");
+        userInput.append("分析目标:").append(goal).append("\n");
+        // 读取用户上传文件
+        String result = ExcelUtils.excelToCsv(multipartFile);
+        userInput.append("数据:").append(result).append("\n");
+
+        return ResultUtils.success(userInput.toString());
+
+    }
+
 
 }

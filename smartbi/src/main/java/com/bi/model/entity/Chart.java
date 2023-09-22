@@ -4,14 +4,16 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * 图标信息表
+ *
  * @author mendax
  * @TableName chart
  */
-@TableName(value ="chart")
+@TableName(value = "chart")
 @Data
 public class Chart implements Serializable {
     /**
@@ -24,6 +26,12 @@ public class Chart implements Serializable {
      * 分析目标
      */
     private String goal;
+
+    /**
+     * 图表名称
+     */
+    private String chartName;
+
 
     /**
      * 图表数据

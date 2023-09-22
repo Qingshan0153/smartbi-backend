@@ -30,6 +30,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         }
 
         Long id = chartQueryRequest.getId();
+        String chartName = chartQueryRequest.getChartName();
         String goal = chartQueryRequest.getGoal();
         String chartType = chartQueryRequest.getChartType();
         Long userId = chartQueryRequest.getUserId();
@@ -38,6 +39,7 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
 
         wrapper.eq(id != null && id > 0, "id", id);
         wrapper.eq(StringUtils.isNotBlank(goal), "goal", goal);
+        wrapper.like(StringUtils.isNotBlank(chartName), "chartName", chartName);
         wrapper.eq(StringUtils.isNotBlank(chartType), "chartType", chartType);
         wrapper.eq(ObjectUtils.isNotEmpty(userId), "userId", userId);
         wrapper.eq("isDelete", false);
