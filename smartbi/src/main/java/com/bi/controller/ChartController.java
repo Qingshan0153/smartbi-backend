@@ -12,11 +12,12 @@ import com.bi.exception.ThrowUtils;
 import com.bi.model.dto.chart.*;
 import com.bi.model.entity.Chart;
 import com.bi.model.entity.User;
+import com.bi.model.vo.BiResponse;
 import com.bi.service.ChartService;
 import com.bi.service.UserService;
-import com.bi.utils.ExcelUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,9 +69,9 @@ public class ChartController {
     /**
      * 删除
      *
-     * @param deleteRequest
-     * @param request
-     * @return
+     * @param deleteRequest deleteRequest
+     * @param request       request
+     * @return BaseResponse<Boolean>
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> deleteChart(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -120,7 +121,7 @@ public class ChartController {
      * @return
      */
     @GetMapping("/get/vo")
-    public BaseResponse<Chart> getChartVoById(long id, HttpServletRequest request) {
+    public BaseResponse<Chart> getChartVoById(long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -208,7 +209,7 @@ public class ChartController {
      * @return BaseResponse<String>
      */
     @PostMapping("/gen")
-    public BaseResponse<String> genChartByAi(@RequestPart("file") MultipartFile multipartFile, GenChartByAiRequest genChartByAiRequest) {
+    public BaseResponse<BiResponse> genChartByAi(@RequestPart("file") MultipartFile multipartFile, GenChartByAiRequest genChartByAiRequest, HttpServletRequest request) {
 
         String chartName = genChartByAiRequest.getChartName();
         String goal = genChartByAiRequest.getGoal();
@@ -216,17 +217,10 @@ public class ChartController {
         ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "目标信息为空");
         ThrowUtils.throwIf(StringUtils.isBlank(chartType), ErrorCode.PARAMS_ERROR, "图标信息为空");
         ThrowUtils.throwIf(StringUtils.isNotBlank(chartName) && chartName.length() > 100, ErrorCode.PARAMS_ERROR, "名称过长");
-
-        // 用户输入信息构建
-        StringBuilder userInput = new StringBuilder();
-        // ai 模型身份预设
-        userInput.append("你是一个数据分析师。接下来我会给你我的分析目标和原始数据,请告诉我分析结论。").append("\n");
-        userInput.append("分析目标:").append(goal).append("\n");
-        // 读取用户上传文件
-        String result = ExcelUtils.excelToCsv(multipartFile);
-        userInput.append("数据:").append(result).append("\n");
-
-        return ResultUtils.success(userInput.toString());
+        User loginUser = userService.getLoginUser(request);
+        Long userId = loginUser.getId();
+        BiResponse biResponse = chartService.getBiResponseInfo(multipartFile, userId ,goal, chartName, chartType);
+        return ResultUtils.success(biResponse);
 
     }
 

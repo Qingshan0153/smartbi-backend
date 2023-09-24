@@ -1,12 +1,13 @@
-package com.zhulang.xfxhsimple.config;
+package com.bi.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author 狐狸半面添
- * @create 2023-09-15 0:46
+ * 配置信息
+ *
+ * @author mendax
  */
 @Configuration
 @ConfigurationProperties(prefix = "xfxh")

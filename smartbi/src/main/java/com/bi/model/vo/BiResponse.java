@@ -1,7 +1,17 @@
-package com.bi.model.vo;/**
- * 
- * @version 2023/9/23 16:30
+package com.bi.model.vo;
+
+import lombok.Data;
+
+/**
+ * BI 返回结果
  * @author mendax
+ * @version 2023/9/23 16:30
  */
-    public class BiRsponse {
+
+@Data
+public class BiResponse {
+
+    private String genChart;
+    private String genResult;
+
 }

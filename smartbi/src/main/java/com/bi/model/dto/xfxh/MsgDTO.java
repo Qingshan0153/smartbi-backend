@@ -1,4 +1,4 @@
-package com.xfxh.dto;
+package com.bi.model.dto.xfxh;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * 消息对象
  *
  * @author 狐狸半面添
- * @create 2023-09-15 0:42
  */
 @Data
 @AllArgsConstructor

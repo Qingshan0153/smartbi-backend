@@ -1,9 +1,9 @@
-package com.zhulang.xfxhsimple.component;
+package com.bi.client;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zhulang.xfxhsimple.config.XfXhConfig;
-import com.zhulang.xfxhsimple.dto.MsgDTO;
-import com.zhulang.xfxhsimple.dto.RequestDTO;
+import com.bi.config.XfXhConfig;
+import com.bi.model.dto.xfxh.MsgDTO;
+import com.bi.model.dto.xfxh.RequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,8 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * @author 狐狸半面添
- * @create 2023-09-15 1:10
+ * 讯飞星火添加配置
+ * @author mendax
  */
 @Component
 @Slf4j

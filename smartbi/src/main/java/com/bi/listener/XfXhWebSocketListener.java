@@ -1,8 +1,8 @@
-package com.xfxh.listener;
+package com.bi.listener;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xfxh.dto.MsgDTO;
-import com.xfxh.dto.ResponseDTO;
+import com.bi.model.dto.xfxh.MsgDTO;
+import com.bi.model.dto.xfxh.ResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -11,7 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.Nullable;
 
 /**
- * @author 狐狸半面添
+ * 监听器
+ *
+ * @author mendax
  * @create 2023-09-15 1:11
  */
 @Slf4j
