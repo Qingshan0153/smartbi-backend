@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import java.io.Serializable;
 import java.util.Date;
 
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**
@@ -26,6 +27,11 @@ public class Chart implements Serializable {
      * 分析目标
      */
     private String goal;
+
+    /**
+     * ai处理状态
+     */
+    private Integer status;
 
     /**
      * 图表名称
@@ -52,6 +58,11 @@ public class Chart implements Serializable {
      * 生成的分析结论
      */
     private String genResult;
+
+    /**
+     * 图表生成错误信息
+     */
+    private String genErrorMessage;
 
     /**
      * 创建用户id

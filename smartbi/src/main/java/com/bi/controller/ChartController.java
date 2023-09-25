@@ -201,7 +201,7 @@ public class ChartController {
     }
 
     /**
-     * ai 生成图表信息
+     * ai 生成图表信息（非异步）
      *
      * @param multipartFile       文件
      * @param genChartByAiRequest 请求
@@ -219,6 +219,30 @@ public class ChartController {
         User loginUser = userService.getLoginUser(request);
         Long userId = loginUser.getId();
         BiResponse biResponse = chartService.getBiResponseInfo(multipartFile, userId, goal, chartName, chartType);
+        return ResultUtils.success(biResponse);
+
+    }
+
+
+    /**
+     * ai 生成图表信息（非异步）
+     *
+     * @param multipartFile       文件
+     * @param genChartByAiRequest 请求
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/gen/async")
+    public BaseResponse<BiResponse> genChartByAiAsync(@RequestPart("file") MultipartFile multipartFile, GenChartByAiRequest genChartByAiRequest, HttpServletRequest request) {
+
+        String chartName = genChartByAiRequest.getChartName();
+        String goal = genChartByAiRequest.getGoal();
+        String chartType = genChartByAiRequest.getChartType();
+        ThrowUtils.throwIf(StringUtils.isBlank(goal), ErrorCode.PARAMS_ERROR, "目标信息为空");
+        ThrowUtils.throwIf(StringUtils.isBlank(chartType), ErrorCode.PARAMS_ERROR, "图标信息为空");
+        ThrowUtils.throwIf(StringUtils.isNotBlank(chartName) && chartName.length() > 100, ErrorCode.PARAMS_ERROR, "名称过长");
+        User loginUser = userService.getLoginUser(request);
+        Long userId = loginUser.getId();
+        BiResponse biResponse = chartService.getBiResponseInfoForAsync(multipartFile, userId, goal, chartName, chartType);
         return ResultUtils.success(biResponse);
 
     }

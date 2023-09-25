@@ -34,4 +34,16 @@ public interface ChartService extends IService<Chart> {
      * @return BiResponse
      */
     BiResponse getBiResponseInfo(MultipartFile multipartFile, Long userId, String goal, String chartName, String chartType);
+
+    /**
+     * 获取 Ai 生成 信息(线程池异步)
+     *
+     * @param multipartFile 数据文件
+     * @param userId        用户id
+     * @param goal          生成目标
+     * @param chartName     图表名称
+     * @param chartType     图表类型
+     * @return BiResponse
+     */
+    BiResponse getBiResponseInfoForAsync(MultipartFile multipartFile, Long userId, String goal, String chartName, String chartType);
 }
