@@ -17,7 +17,6 @@ import com.bi.service.ChartService;
 import com.bi.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -202,7 +201,7 @@ public class ChartController {
     }
 
     /**
-     * 文件上传
+     * ai 生成图表信息
      *
      * @param multipartFile       文件
      * @param genChartByAiRequest 请求
@@ -219,7 +218,7 @@ public class ChartController {
         ThrowUtils.throwIf(StringUtils.isNotBlank(chartName) && chartName.length() > 100, ErrorCode.PARAMS_ERROR, "名称过长");
         User loginUser = userService.getLoginUser(request);
         Long userId = loginUser.getId();
-        BiResponse biResponse = chartService.getBiResponseInfo(multipartFile, userId ,goal, chartName, chartType);
+        BiResponse biResponse = chartService.getBiResponseInfo(multipartFile, userId, goal, chartName, chartType);
         return ResultUtils.success(biResponse);
 
     }

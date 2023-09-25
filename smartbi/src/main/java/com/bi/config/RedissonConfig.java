@@ -1,7 +1,37 @@
-package com.bi.config;/**
- * 
- * @version 2023/9/24 21:14
+package com.bi.config;
+
+import lombok.Data;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * Redisson 配置类
+ *
  * @author mendax
+ * @version 2023/9/24 21:14
  */
-    public class RedissonConfig {
+
+@Configuration
+@ConfigurationProperties(prefix = "spring.redis")
+@Data
+public class RedissonConfig {
+
+    private Integer database;
+    private String host;
+    private Integer port;
+
+
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setDatabase(database)
+                .setAddress("redis://" + host + ":" + port);
+        return Redisson.create(config);
+
+    }
 }

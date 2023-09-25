@@ -1,11 +1,14 @@
 package com.bi.service.impl;
 
+import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bi.common.ErrorCode;
 import com.bi.constant.CommonConstant;
 import com.bi.exception.BusinessException;
+import com.bi.exception.ThrowUtils;
 import com.bi.manager.AiManager;
+import com.bi.manager.RedisLimiterManager;
 import com.bi.mapper.ChartMapper;
 import com.bi.model.dto.chart.ChartQueryRequest;
 import com.bi.model.entity.Chart;
@@ -20,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author mendax
@@ -30,9 +35,13 @@ import javax.annotation.Resource;
 public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         implements ChartService {
 
+    final List<String> fileSuffixWriteList = Arrays.asList( "xlsx", "xls");
 
     @Resource
     private AiManager aiManager;
+
+    @Resource
+    private RedisLimiterManager redisLimiterManager;
 
     @Override
     public QueryWrapper<Chart> getQueryWrapper(ChartQueryRequest chartQueryRequest) {
@@ -69,10 +78,24 @@ public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
     @Transactional(rollbackFor = Exception.class)
     public BiResponse getBiResponseInfo(MultipartFile multipartFile, Long userId, String goal, String chartName, String chartType) {
 
+        long oneMb = 1024 * 1024;
+
+        // 校验文件大小
+        long fileSize = multipartFile.getSize();
+        ThrowUtils.throwIf(fileSize > oneMb, ErrorCode.PARAMS_ERROR, "文件大小超出1MB");
+        // 校验文件后缀
+        String originalFilename = multipartFile.getOriginalFilename();
+        String suffix = FileUtil.getSuffix(originalFilename);
+        ThrowUtils.throwIf(!fileSuffixWriteList.contains(suffix), ErrorCode.PARAMS_ERROR, "文件类型错误");
+        final String limitPrefix = "ai_request_";
+        // 用户调用次数限流(限流粒度明确：单个用户单位时间内访问的限流)
+        redisLimiterManager.doRateLimit(limitPrefix + userId);
+
         // 读取用户上传文件
         String result = ExcelUtils.excelToCsv(multipartFile);
 
-        String aiContent = aiManager.doChat(goal,result,chartType);
+//        String aiContent = aiManager.doChat(goal, result, chartType);
+        String aiContent = "null";
 
         String[] split = aiContent.split("【【【【【");
         if (split.length < 3) {
