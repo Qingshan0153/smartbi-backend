@@ -35,17 +35,17 @@ spring:
         max-idle: 10
         min-idle: 0
     timeout: 10000
-  # Elasticsearch 配置
-  # todo 需替换配置，然后取消注释
-#  elasticsearch:
-#    uris: http://localhost:9200
-#    username: root
-#    password: 123456
+  # rabbitmq 配置
   # 文件上传
   servlet:
     multipart:
       # 大小限制
       max-file-size: 10MB
+  rabbitmq:
+    host: 192.168.200.130
+    port: 5672
+    username: admin
+    password: 123
 server:
   port: 15672
   servlet:

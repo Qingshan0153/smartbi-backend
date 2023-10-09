@@ -4,7 +4,6 @@ import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bi.common.ErrorCode;
-import com.bi.config.ThreadPoolExecutorConfig;
 import com.bi.constant.CommonConstant;
 import com.bi.exception.BusinessException;
 import com.bi.exception.ThrowUtils;
@@ -30,13 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author mendax
  * @description 针对表【chart(图标信息表)】的数据库操作Service实现
  * @createDate 2023-09-21 21:01:08
  */
+
 @Service
 public class ChartServiceImpl extends ServiceImpl<ChartMapper, Chart>
         implements ChartService {
